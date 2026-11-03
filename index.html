@@ -1,0 +1,1086 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VTC | Forensic System</title>
+
+<style>
+:root{
+  --red:#ff304f;
+  --dark:#07080d;
+  --panel:#10121c;
+  --line:#30313c;
+  --white:#edf2fa;
+  --muted:#8990a2;
+  --green:#6affc3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  color:var(--white);
+  font-family:Tahoma,Arial,sans-serif;
+  background:var(--dark);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+[hidden]{display:none!important}
+#stars{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:
+   radial-gradient(ellipse at 50% 0%,#50122255,transparent 55%),
+   linear-gradient(#ffffff04 1px,transparent 1px),
+   linear-gradient(90deg,#ffffff04 1px,transparent 1px);
+  background-size:auto,45px 45px,45px 45px;
+}
+.shell{
+  max-width:1150px;
+  margin:auto;
+  padding:24px;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--line);
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.logo{
+  width:46px;height:46px;
+  display:grid;place-items:center;
+  color:var(--red);
+  border:1px solid var(--red);
+  box-shadow:0 0 20px #ff304f33;
+  font-size:28px;
+}
+.brand strong{font-size:20px;letter-spacing:3px}
+.brand small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:2px;
+  margin-top:4px;
+}
+.status{
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:1px;
+}
+.status:before{
+  content:"";
+  display:inline-block;
+  width:7px;height:7px;
+  background:var(--green);
+  border-radius:50%;
+  margin-left:7px;
+  box-shadow:0 0 10px var(--green);
+}
+.card{
+  background:linear-gradient(140deg,#171923,#0c0d15);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+}
+.card:before{
+  content:"";
+  position:absolute;
+  width:50px;height:3px;
+  background:var(--red);
+  top:0;right:22px;
+  box-shadow:0 0 14px var(--red);
+}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(27px,5vw,45px)}
+h2{font-size:19px}
+h3{font-size:15px}
+p{line-height:1.9}
+.muted{color:var(--muted)}
+.red{color:var(--red)}
+.green{color:var(--green)}
+.mono{font-family:Consolas,monospace;direction:ltr}
+.eyebrow{
+  color:var(--red);
+  letter-spacing:3px;
+  font:12px Consolas,monospace;
+  margin-bottom:14px;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.btn{
+  border:1px solid var(--red);
+  border-radius:7px;
+  padding:13px 22px;
+  background:var(--red);
+  color:white;
+  font-weight:bold;
+  transition:.2s;
+}
+.btn:hover{
+  box-shadow:0 0 24px #ff304f60;
+  transform:translateY(-2px);
+}
+.btn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+  transform:none;
+}
+.btn.secondary{
+  background:transparent;
+  color:var(--red);
+}
+.message{
+  min-height:22px;
+  font-size:13px;
+  color:var(--muted);
+  margin-top:14px;
+}
+#loginScreen{
+  max-width:550px;
+  margin:65px auto;
+  text-align:center;
+}
+.lockIcon{
+  width:100px;height:100px;
+  border:2px solid var(--red);
+  border-radius:50%;
+  margin:12px auto 25px;
+  display:grid;
+  place-items:center;
+  font-size:47px;
+  color:var(--red);
+  box-shadow:0 0 65px #ff304f30,inset 0 0 25px #ff304f19;
+  animation:pulse 2.5s infinite;
+}
+@keyframes pulse{
+  50%{box-shadow:0 0 85px #ff304f60,inset 0 0 35px #ff304f20}
+}
+.pin{
+  display:block;
+  width:min(100%,280px);
+  margin:25px auto 16px;
+  padding:16px;
+  text-align:center;
+  color:white;
+  background:#08090f;
+  border:1px solid #555463;
+  border-radius:8px;
+  font:26px Consolas,monospace;
+  letter-spacing:12px;
+  outline:none;
+}
+.pin:focus{border-color:var(--red)}
+#dashboard{padding-top:30px}
+.hero{
+  margin-bottom:25px;
+  padding:20px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+}
+.hero h1{margin-bottom:8px}
+.progressTag{
+  border:1px solid var(--line);
+  padding:12px 16px;
+  border-radius:7px;
+  font-family:Consolas,monospace;
+  font-size:12px;
+}
+.sectionTitle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:25px 0 15px;
+}
+.sectionTitle small{
+  color:var(--muted);
+  font:12px Consolas,monospace;
+}
+.scanners{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.scanCard{text-align:center}
+.scanCard h3{
+  letter-spacing:1px;
+  margin-bottom:10px;
+}
+.scanArea{
+  height:265px;
+  background:
+   radial-gradient(circle,#ff304f0e,transparent 60%),
+   #090b12;
+  border:1px solid #292b38;
+  border-radius:10px;
+  margin:20px 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.corner{
+  position:absolute;
+  width:28px;height:28px;
+  border-color:var(--red);
+  border-style:solid;
+  opacity:.8;
+}
+.tl{top:10px;left:10px;border-width:2px 0 0 2px}
+.tr{top:10px;right:10px;border-width:2px 2px 0 0}
+.bl{bottom:10px;left:10px;border-width:0 0 2px 2px}
+.br{bottom:10px;right:10px;border-width:0 2px 2px 0}
+.fingerPad{
+  width:210px;height:220px;
+  border:0;
+  background:transparent;
+  position:relative;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  cursor:pointer;
+}
+.fingerPad svg{width:100%;height:100%}
+.fingerprint path{
+  stroke:#fe4766;
+  fill:none;
+  stroke-width:3.2;
+  stroke-linecap:round;
+  opacity:.86;
+  filter:drop-shadow(0 0 3px #ff304f80);
+}
+.sweep{
+  position:absolute;
+  left:8%;right:8%;
+  height:3px;
+  top:10%;
+  background:var(--red);
+  box-shadow:0 0 18px 4px #ff304f88;
+  opacity:0;
+  pointer-events:none;
+}
+.fingerPad.scanning .sweep{
+  opacity:1;
+  animation:sweep 1.6s linear infinite alternate;
+}
+@keyframes sweep{
+  to{top:90%}
+}
+.fingerPad.done .fingerprint path{
+  stroke:var(--green);
+  filter:drop-shadow(0 0 4px #6affc380);
+}
+.fingerPad.done{cursor:default}
+.eye{
+  width:245px;
+  height:126px;
+  border-radius:50%;
+  background:
+   radial-gradient(ellipse,#d4d9e4 35%,#8b93a4 75%,#262936 100%);
+  box-shadow:
+   0 0 0 9px #1a1b28,
+   0 0 0 11px #ff304f55,
+   0 0 40px #ff304f33;
+  position:relative;
+  overflow:hidden;
+  border:5px solid #242632;
+}
+.iris{
+  width:112px;height:112px;
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(calc(-50% + var(--dx,0px)),calc(-50% + var(--dy,0px)));
+  border-radius:50%;
+  background:
+   radial-gradient(circle,#05070b 0 22%,transparent 23%),
+   repeating-conic-gradient(
+     from 0deg,
+     #1b2229 0deg 5deg,
+     #ff3859 6deg 9deg,
+     #491223 10deg 17deg
+   );
+  box-shadow:inset 0 0 15px black,0 0 0 4px #1c1119;
+  transition:transform .12s ease-out;
+}
+.iris:after{
+  content:"";
+  position:absolute;
+  width:34px;height:34px;
+  top:10px;left:24px;
+  border-radius:50%;
+  background:#ffffff66;
+  filter:blur(8px);
+}
+.eyeScan{
+  position:absolute;
+  left:0;right:0;
+  top:0;
+  height:3px;
+  background:#ff304f;
+  box-shadow:0 0 20px 6px #ff304f99;
+  opacity:0;
+}
+.scanArea.eyeActive .eyeScan{
+  opacity:1;
+  animation:sweep 1s linear infinite alternate;
+}
+.scanArea.eyeDone .eye{
+  box-shadow:0 0 0 9px #1a1b28,0 0 0 11px var(--green),0 0 35px #6affc360;
+}
+.bar{
+  background:#252735;
+  height:6px;
+  width:100%;
+  border-radius:8px;
+  overflow:hidden;
+  margin:15px 0;
+}
+.fill{
+  width:0%;
+  height:100%;
+  background:var(--red);
+  box-shadow:0 0 12px var(--red);
+  transition:width .05s linear;
+}
+.scanState{
+  color:var(--muted);
+  font:12px Consolas,monospace;
+  min-height:18px;
+}
+.caseLocked{
+  padding:50px 25px;
+  text-align:center;
+  border:1px dashed #54505d;
+  border-radius:12px;
+  color:var(--muted);
+}
+.caseLocked strong{
+  display:block;
+  font-size:25px;
+  margin-bottom:12px;
+  color:var(--red);
+}
+.evidenceLayout{
+  display:grid;
+  grid-template-columns:minmax(230px,1fr) minmax(0,1.4fr);
+  gap:18px;
+}
+.evidenceGrid{
+  display:grid;
+  gap:10px;
+}
+.evidence{
+  text-align:right;
+  padding:17px;
+  background:#0c0e16;
+  border:1px solid #393946;
+  border-radius:8px;
+  color:white;
+  transition:.2s;
+}
+.evidence:hover,.evidence.selected{
+  border-color:var(--red);
+  background:#29121e;
+}
+.evidence.read:after{
+  content:"✓  تمت المراجعة";
+  display:block;
+  color:var(--green);
+  font-size:11px;
+  margin-top:10px;
+}
+.evidence small{
+  display:block;
+  margin-bottom:7px;
+  color:var(--red);
+  font:11px Consolas,monospace;
+}
+.detailPanel{
+  padding:24px;
+  border:1px solid #3b3a48;
+  border-radius:9px;
+  background:#080a11;
+  min-height:310px;
+}
+.detailPanel p{
+  line-height:2.15;
+  white-space:pre-line;
+}
+.detailCode{
+  color:var(--red);
+  font:12px Consolas,monospace;
+  margin-bottom:25px;
+}
+.stamp{
+  display:inline-block;
+  border:1px solid var(--green);
+  color:var(--green);
+  padding:8px 14px;
+  font:11px Consolas,monospace;
+  margin-top:25px;
+}
+.suspects{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:20px;
+}
+.suspect{
+  background:#0c0e16;
+  color:white;
+  border:1px solid #393946;
+  border-radius:10px;
+  padding:22px 12px;
+  min-height:130px;
+}
+.suspect .avatar{
+  display:block;
+  font-size:35px;
+  color:#9295a6;
+  margin-bottom:13px;
+}
+.suspect small{
+  display:block;
+  color:var(--muted);
+  margin-top:9px;
+}
+.suspect:hover,.suspect.chosen{
+  border-color:var(--red);
+  background:#2b121d;
+}
+.report{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+  margin-top:22px;
+}
+.overlay{
+  position:fixed;
+  inset:0;
+  background:#040408ed;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.result{
+  max-width:530px;
+  width:100%;
+  text-align:center;
+  border:1px solid var(--green);
+  background:#0c1117;
+  padding:40px 25px;
+  border-radius:14px;
+  box-shadow:0 0 85px #6affc31c;
+}
+.result .symbol{
+  color:var(--green);
+  font-size:75px;
+  margin-bottom:17px;
+}
+footer{
+  text-align:center;
+  padding:35px 10px 15px;
+  color:#676b7b;
+  font:11px Consolas,monospace;
+}
+@media(max-width:750px){
+  .scanners,.evidenceLayout{grid-template-columns:1fr}
+  .suspects{grid-template-columns:1fr}
+  .shell{padding:15px}
+  .card{padding:18px}
+  header .status{font-size:9px}
+}
+</style>
+</head>
+
+<body>
+<canvas id="stars"></canvas>
+
+<div class="shell">
+<header>
+  <div class="brand">
+    <div class="logo">◈</div>
+    <div>
+      <strong>VTC</strong>
+      <small>FORENSIC INTELLIGENCE</small>
+    </div>
+  </div>
+  <div class="status" id="systemStatus">SYSTEM ONLINE</div>
+</header>
+
+<!-- شاشة الدخول -->
+<section id="loginScreen" class="card">
+  <div class="eyebrow">RESTRICTED ACCESS // 01</div>
+  <div class="lockIcon">⬡</div>
+  <h1>نظام التحقيق السري</h1>
+  <p class="muted">
+    مرحبًا أيها المحقق.
+    تم رصد حادثة أمنية داخل المنشأة.
+    أدخل رمز التصريح للوصول إلى الأدلة.
+  </p>
+  <input id="pin" class="pin" type="password"
+         inputmode="numeric" maxlength="4"
+         placeholder="••••" autocomplete="off">
+  <button class="btn" id="loginBtn">فتح النظام</button>
+  <p class="message" id="loginMsg">
+    تلميح: سنة أرشيف المشروع 2049
+  </p>
+</section>
+
+<!-- لوحة التحقيق -->
+<main id="dashboard" hidden>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">CLASSIFIED / INVESTIGATION 07</div>
+      <h1>ملف القضية: <span class="red">ORION</span></h1>
+      <p class="muted">
+        اختفت شريحة تجريبية من المختبر الساعة 02:14.
+        مهمتك تحديد المسؤول.
+      </p>
+    </div>
+    <div class="progressTag">
+      ACCESS: <span id="accessStatus" class="red">0/2</span>
+    </div>
+  </section>
+
+  <div class="sectionTitle">
+    <h2>01 / التحقق البيومتري</h2>
+    <small>BIOMETRIC AUTHORIZATION</small>
+  </div>
+
+  <div class="scanners">
+
+    <!-- البصمة -->
+    <section class="card scanCard">
+      <h3>ماسح البصمة</h3>
+      <p class="muted">اضغطي مطولًا حتى يكتمل المسح.</p>
+      <div class="scanArea">
+        <i class="corner tl"></i>
+        <i class="corner tr"></i>
+        <i class="corner bl"></i>
+        <i class="corner br"></i>
+
+        <button class="fingerPad" id="fingerPad"
+                aria-label="اضغطي مطولا لمسح البصمة">
+          <div class="sweep"></div>
+          <svg viewBox="0 0 300 300">
+            <circle cx="150" cy="150" r="132"
+                    stroke="#ff304f33"
+                    stroke-dasharray="8 9"
+                    fill="none"/>
+            <g class="fingerprint">
+              <path d="M85 168 C85 78 215 78 215 168"/>
+              <path d="M98 170 C98 99 202 99 202 170"/>
+              <path d="M111 175 C111 119 189 119 189 175"/>
+              <path d="M124 182 C124 141 176 141 176 182"/>
+              <path d="M137 186 C137 168 163 168 163 186"/>
+              <path d="M150 185 C150 215 141 244 130 261"/>
+              <path d="M164 189 C166 222 157 250 151 267"/>
+              <path d="M178 185 C182 221 177 245 169 261"/>
+              <path d="M191 181 C198 213 195 236 188 251"/>
+              <path d="M204 178 C214 202 215 224 207 239"/>
+              <path d="M111 185 C108 213 104 228 96 237"/>
+              <path d="M124 191 C120 226 115 243 111 250"/>
+              <path d="M86 181 C84 196 80 209 75 217"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+      <div class="bar"><div id="fingerFill" class="fill"></div></div>
+      <div class="scanState" id="fingerState">WAITING FOR INPUT</div>
+    </section>
+
+    <!-- العين -->
+    <section class="card scanCard">
+      <h3>ماسح قزحية العين</h3>
+      <p class="muted">حركي الماوس وشغلي الماسح.</p>
+      <div class="scanArea" id="eyeArea">
+        <i class="corner tl"></i>
+        <i class="corner tr"></i>
+        <i class="corner bl"></i>
+        <i class="corner br"></i>
+
+        <div class="eye">
+          <div class="iris" id="iris"></div>
+        </div>
+        <div class="eyeScan"></div>
+      </div>
+      <button class="btn secondary" id="scanEye">
+        بدء فحص القزحية
+      </button>
+      <p class="scanState" id="eyeState">RETINA SCAN READY</p>
+    </section>
+  </div>
+
+  <div class="sectionTitle">
+    <h2>02 / الأدلة الجنائية</h2>
+    <small id="evidenceStatus">LOCKED</small>
+  </div>
+
+  <div id="caseLocked" class="caseLocked">
+    <strong>🔒 الملفات مشفرة</strong>
+    أكملي فحص البصمة والقزحية لفتح سجلات القضية.
+  </div>
+
+  <div id="caseOpen" hidden>
+    <div class="evidenceLayout">
+      <div class="evidenceGrid" id="evidenceGrid"></div>
+      <div class="detailPanel">
+        <div class="detailCode" id="detailCode">
+          INVESTIGATION DATABASE
+        </div>
+        <h2 id="detailTitle">حددي أحد الأدلة</h2>
+        <p id="detailText" class="muted">
+          اضغطي على أي ملف لعرض محتوياته وتحليل الأدلة.
+        </p>
+        <div class="stamp">CONFIDENTIAL / VTC</div>
+      </div>
+    </div>
+
+    <div class="sectionTitle">
+      <h2>03 / تحديد المشتبه فيه</h2>
+      <small id="reviewStatus">0/4 FILES REVIEWED</small>
+    </div>
+
+    <section class="card">
+      <div id="suspectsLocked" class="muted">
+        راجعي الأدلة الأربعة أولًا لتفعيل تقرير التحقيق.
+      </div>
+
+      <div id="suspectBlock" hidden>
+        <p class="muted">
+          أمامك ثلاثة مشتبه فيهم.
+          اقرئي الأدلة وحددي الشخص الذي تتطابق معه.
+        </p>
+
+        <div class="suspects">
+          <button class="suspect" data-id="reem">
+            <span class="avatar">◉</span>
+            <strong>ريم</strong>
+            <small>فنية الشبكات / AX-03</small>
+          </button>
+          <button class="suspect" data-id="malik">
+            <span class="avatar">◉</span>
+            <strong>مالك</strong>
+            <small>رئيس الأمن / AX-07</small>
+          </button>
+          <button class="suspect" data-id="sara">
+            <span class="avatar">◉</span>
+            <strong>سارة</strong>
+            <small>مسؤولة الأرشيف / AX-12</small>
+          </button>
+        </div>
+
+        <div class="report">
+          <button class="btn" id="submitReport" disabled>
+            اعتماد تقرير التحقيق
+          </button>
+          <span class="message" id="reportMsg"></span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>VTC FORENSIC SYSTEM // CLASSIFIED INTERACTIVE SIMULATION</footer>
+</div>
+
+<!-- النتيجة النهائية -->
+<div class="overlay" id="resultOverlay" hidden>
+  <div class="result">
+    <div class="symbol">◎</div>
+    <div class="eyebrow green">INVESTIGATION COMPLETE</div>
+    <h1>تم حل القضية!</h1>
+    <p>
+      أحسنتِ أيتها المحققة.
+      جميع الأدلة تتطابق مع <b class="green">مالك</b>.
+    </p>
+    <p class="muted">
+      استخدم تصريح AX-07 وعطّل الكاميرات قبل دخول المختبر.
+      تم إرسال التقرير وإغلاق القضية.
+    </p>
+    <button class="btn" id="restartBtn">بدء تحقيق جديد</button>
+  </div>
+</div>
+
+<script>
+// المؤثرات الصوتية
+let audioContext;
+function beep(frequency=500,duration=.1){
+  try{
+    audioContext ||= new (
+      window.AudioContext || window.webkitAudioContext
+    )();
+    const oscillator=audioContext.createOscillator();
+    const gain=audioContext.createGain();
+    const now=audioContext.currentTime;
+
+    oscillator.type="sine";
+    oscillator.frequency.value=frequency;
+    gain.gain.setValueAtTime(.04,now);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+    oscillator.start(now);
+    oscillator.stop(now+duration);
+  }catch(error){}
+}
+
+// حالة اللعبة
+const state={
+  finger:false,
+  eye:false,
+  reviewed:new Set(),
+  selected:null
+};
+
+const $=id=>document.getElementById(id);
+
+// دخول النظام
+function login(){
+  if($("pin").value.trim()!=="2049"){
+    $("loginMsg").textContent="ACCESS DENIED — الرمز غير صحيح";
+    $("loginMsg").style.color="#ff304f";
+    beep(190,.2);
+    return;
+  }
+
+  $("loginScreen").hidden=true;
+  $("dashboard").hidden=false;
+  $("systemStatus").textContent="AUTHORIZED";
+  beep(800,.12);
+  setTimeout(()=>beep(1050,.14),160);
+}
+
+$("loginBtn").addEventListener("click",login);
+$("pin").addEventListener("keydown",e=>{
+  if(e.key==="Enter") login();
+});
+
+// مسح البصمة بالضغط المطول
+const fingerPad=$("fingerPad");
+let fingerTimer=null;
+let fingerStart=0;
+
+function startFinger(){
+  if(state.finger || fingerTimer!==null) return;
+
+  fingerStart=performance.now();
+  fingerPad.classList.add("scanning");
+  $("fingerState").textContent="SCANNING FINGERPRINT...";
+  beep(490,.07);
+
+  fingerTimer=setInterval(()=>{
+    const elapsed=performance.now()-fingerStart;
+    const percent=Math.min(100,elapsed/20);
+
+    $("fingerFill").style.width=percent+"%";
+
+    if(percent>=100){
+      clearInterval(fingerTimer);
+      fingerTimer=null;
+      state.finger=true;
+      fingerPad.classList.remove("scanning");
+      fingerPad.classList.add("done");
+      $("fingerFill").style.background="var(--green)";
+      $("fingerState").textContent="FINGERPRINT VERIFIED ✓";
+      $("fingerState").style.color="var(--green)";
+      beep(1050,.18);
+      updateAccess();
+    }
+  },30);
+}
+
+function stopFinger(){
+  if(state.finger)return;
+  if(fingerTimer!==null){
+    clearInterval(fingerTimer);
+    fingerTimer=null;
+    fingerPad.classList.remove("scanning");
+    $("fingerFill").style.width="0%";
+    $("fingerState").textContent="HOLD TO SCAN";
+  }
+}
+
+fingerPad.addEventListener("pointerdown",e=>{
+  if(e.button!==0)return;
+  e.preventDefault();
+  fingerPad.setPointerCapture(e.pointerId);
+  startFinger();
+});
+fingerPad.addEventListener("pointerup",stopFinger);
+fingerPad.addEventListener("pointercancel",stopFinger);
+window.addEventListener("blur",stopFinger);
+
+fingerPad.addEventListener("keydown",e=>{
+  if(e.repeat)return;
+  if(e.code==="Space" || e.code==="Enter"){
+    e.preventDefault();
+    startFinger();
+  }
+});
+fingerPad.addEventListener("keyup",e=>{
+  if(e.code==="Space" || e.code==="Enter")stopFinger();
+});
+
+// العين تتبع مؤشر الماوس
+document.addEventListener("pointermove",e=>{
+  const x=(e.clientX/window.innerWidth-.5)*24;
+  const y=(e.clientY/window.innerHeight-.5)*16;
+  $("iris").style.setProperty("--dx",x+"px");
+  $("iris").style.setProperty("--dy",y+"px");
+});
+
+// محاكاة فحص القزحية
+$("scanEye").addEventListener("click",()=>{
+  if(state.eye)return;
+
+  const button=$("scanEye");
+  button.disabled=true;
+  $("eyeArea").classList.add("eyeActive");
+  $("eyeState").textContent="ANALYZING IRIS PATTERN...";
+  beep(620,.1);
+
+  setTimeout(()=>{
+    state.eye=true;
+    $("eyeArea").classList.remove("eyeActive");
+    $("eyeArea").classList.add("eyeDone");
+    $("eyeState").textContent="IRIS VERIFIED ✓";
+    $("eyeState").style.color="var(--green)";
+    button.textContent="تم التحقق ✓";
+    beep(1050,.2);
+    updateAccess();
+  },2400);
+});
+
+// فتح قاعدة البيانات عند اكتمال التحقق
+function updateAccess(){
+  const count=Number(state.finger)+Number(state.eye);
+  $("accessStatus").textContent=count+"/2";
+
+  if(count===2){
+    $("accessStatus").style.color="var(--green)";
+    $("caseLocked").hidden=true;
+    $("caseOpen").hidden=false;
+    $("evidenceStatus").textContent="DATABASE UNLOCKED";
+    beep(850,.12);
+    renderEvidence();
+  }
+}
+
+// ملفات القضية
+const evidence=[
+  {
+    code:"LOG-001",
+    title:"سجل البوابة الأمنية",
+    preview:"تم تسجيل دخول غير معتاد",
+    text:
+`التوقيت: 02:14 صباحًا
+الموقع: المدخل الرئيسي للمختبر.
+
+رصد النظام فتح الباب بواسطة بطاقة التصريح AX-07.
+
+لم يُسجّل النظام أي محاولة كسر أو دخول بالقوة.
+
+الاستنتاج: الشخص الذي دخل يمتلك تصريحًا أمنيًا معتمدًا.`
+  },
+  {
+    code:"LOG-002",
+    title:"سجل الكاميرات",
+    preview:"إيقاف المراقبة قبل الحادث",
+    text:
+`التوقيت: 02:11 صباحًا
+الحالة: توقف كاميرات المختبر.
+
+أكدت سجلات الخادم أن التعطيل تم بأمر يدوي وليس بعطل كهربائي.
+
+الحساب المستخدم:
+MALIK.07
+
+الاستنتاج: أحد الأشخاص المخولين أوقف المراقبة قبل دخول المختبر.`
+  },
+  {
+    code:"FRAME-003",
+    title:"صورة الكاميرا الاحتياطية",
+    preview:"تحليل آخر تسجيل متاح",
+    text:
+`تم استرجاع إطار من كاميرا الطوارئ.
+
+تظهر في التسجيل شخصية ترتدي سترة أمنية سوداء عليها شريط أحمر.
+
+التوقيت التقريبي: 02:13 صباحًا.
+
+لم تتمكن الكاميرا من تسجيل ملامح الوجه بوضوح.
+
+الاستنتاج: الملابس تتوافق مع زي فريق الأمن.`
+  },
+  {
+    code:"AUTH-004",
+    title:"مطابقة التصاريح",
+    preview:"سجل الموظفين المعتمدين",
+    text:
+`تمت مراجعة بيانات التصاريح:
+
+ريم: AX-03 — فنية الشبكات.
+مالك: AX-07 — رئيس الأمن.
+سارة: AX-12 — مسؤولة الأرشيف.
+
+تؤكد قاعدة البيانات أن AX-07 مخصص لمالك ولم يتم تسجيل إعارة رسمية للبطاقة.
+
+الاستنتاج: قارني رقم البطاقة بحساب تعطيل الكاميرات.`
+  }
+];
+
+let evidenceRendered=false;
+
+function renderEvidence(){
+  if(evidenceRendered)return;
+  evidenceRendered=true;
+
+  evidence.forEach((file,index)=>{
+    const button=document.createElement("button");
+    button.className="evidence";
+    button.type="button";
+    button.innerHTML=`
+      <small>${file.code}</small>
+      <strong>${file.title}</strong>
+      <p class="muted" style="margin:7px 0 0;font-size:12px">
+        ${file.preview}
+      </p>
+    `;
+    button.addEventListener("click",()=>{
+      openEvidence(index);
+    });
+    $("evidenceGrid").appendChild(button);
+  });
+}
+
+function openEvidence(index){
+  const file=evidence[index];
+
+  state.reviewed.add(index);
+  $("detailCode").textContent=file.code+" / DECRYPTED";
+  $("detailTitle").textContent=file.title;
+  $("detailText").textContent=file.text;
+  $("detailText").classList.remove("muted");
+
+  [...$("evidenceGrid").children].forEach((button,i)=>{
+    button.classList.toggle("read",state.reviewed.has(i));
+    button.classList.toggle("selected",i===index);
+  });
+
+  const count=state.reviewed.size;
+  $("reviewStatus").textContent=count+"/4 FILES REVIEWED";
+  $("evidenceStatus").textContent="EVIDENCE "+count+"/4";
+  beep(650,.08);
+
+  if(count===evidence.length){
+    $("suspectsLocked").hidden=true;
+    $("suspectBlock").hidden=false;
+  }
+}
+
+// تحديد المشتبه فيه
+document.querySelectorAll(".suspect").forEach(button=>{
+  button.addEventListener("click",()=>{
+    state.selected=button.dataset.id;
+
+    document.querySelectorAll(".suspect").forEach(item=>{
+      item.classList.remove("chosen");
+    });
+
+    button.classList.add("chosen");
+    $("submitReport").disabled=false;
+    $("reportMsg").textContent="المشتبه فيه محدد. جاهز لاعتماد التقرير.";
+    $("reportMsg").style.color="var(--muted)";
+    beep(650,.07);
+  });
+});
+
+$("submitReport").addEventListener("click",()=>{
+  if(!state.selected)return;
+
+  if(state.selected==="malik"){
+    $("resultOverlay").hidden=false;
+    $("systemStatus").textContent="CASE SOLVED";
+    beep(900,.16);
+    setTimeout(()=>beep(1200,.25),200);
+  }else{
+    $("reportMsg").textContent=
+      "الأدلة لا تتطابق. راجعي التصاريح وسجل الكاميرات.";
+    $("reportMsg").style.color="var(--red)";
+    beep(210,.25);
+  }
+});
+
+$("restartBtn").addEventListener("click",()=>{
+  location.reload();
+});
+
+// جزيئات الخلفية المتحركة
+const canvas=$("stars");
+const ctx=canvas.getContext("2d");
+let particles=[];
+
+function resizeCanvas(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+  particles=Array.from({length:45},()=>({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    r:Math.random()*1.5+.4,
+    speed:Math.random()*.35+.1,
+    alpha:Math.random()*.55+.1
+  }));
+}
+
+function animateParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,65,90,${p.alpha})`;
+    ctx.fill();
+    p.y-=p.speed;
+
+    if(p.y<0){
+      p.y=canvas.height;
+      p.x=Math.random()*canvas.width;
+    }
+  });
+
+  requestAnimationFrame(animateParticles);
+}
+
+window.addEventListener("resize",resizeCanvas);
+resizeCanvas();
+animateParticles();
+</script>
+</body>
+</html>
